@@ -129,3 +129,22 @@ class DjangoSession(models.Model):
     class Meta:
         managed = False
         db_table = 'django_session'
+
+class Osoba(models.Model):
+    miesiace_urodzenia = (
+        ('1', 'Styczen'),
+        ('2', 'Luty'),
+        ('3', 'Marzec'),
+        ('4', 'Kwiecien'),
+        ('5', 'Maj'),
+        ('6', 'Czerwiec'),
+        ('7', 'Lipiec'),
+        ('8', 'Sierpien'),
+        ('9', 'Wrzesien'),
+        ('10', 'Pazdziernik'),
+        ('11', 'Listopad'),
+        ('12', 'Grudzien'),
+    )
+    imie = models.CharField(max_length=60)
+    nazwisko = models.CharField(max_length=60)
+    miasiac_urodzenia = models.CharField(max_length=2, choices=miesiace_urodzenia, default="1")
