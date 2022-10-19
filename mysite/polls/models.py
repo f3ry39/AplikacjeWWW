@@ -148,8 +148,16 @@ class Osoba(models.Model):
     nazwisko = models.CharField(max_length=60)
     miesiac_urodzenia = models.IntegerField(choices=miesiac.choices)
     data_dodania = models.DateField(default=datetime.date.today)
+    kraj = models.ForeignKey("Druzyna", blank = True, on_delete = models.CASCADE, null=True)
 
     class Meta:
         ordering = ['nazwisko']
     def __str__(self):
         return self.imie + ' ' + self.nazwisko
+
+class Druzyna(models.Model) :
+
+    nazwa = models.CharField(max_length=60)
+    kraj = models.CharField(max_length=2)
+    def __str__(self):
+        return self.kraj
