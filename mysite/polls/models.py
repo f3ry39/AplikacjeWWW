@@ -24,7 +24,6 @@ class AuthGroup(models.Model):
         managed = False
         db_table = 'auth_group'
 
-
 class AuthGroupPermissions(models.Model):
     id = models.BigAutoField(primary_key=True)
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
@@ -131,20 +130,26 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 class Osoba(models.Model):
-    miesiace_urodzenia = (
-        ('1', 'Styczen'),
-        ('2', 'Luty'),
-        ('3', 'Marzec'),
-        ('4', 'Kwiecien'),
-        ('5', 'Maj'),
-        ('6', 'Czerwiec'),
-        ('7', 'Lipiec'),
-        ('8', 'Sierpien'),
-        ('9', 'Wrzesien'),
-        ('10', 'Pazdziernik'),
-        ('11', 'Listopad'),
-        ('12', 'Grudzien'),
-    )
+    class miesiac(models.IntegerChoices):
+        STYCZEN = 1
+        LUTY = 2
+        MARZEC = 3
+        KWIECIEN = 4
+        MAJ = 5
+        CZERWIEC = 6
+        LIPIEC = 7
+        SIERPIEN = 8
+        WRZESIEN = 9
+        PAZDZIERNIK = 10
+        LISTOPAD = 11
+        GRUDZIEN = 12
+
     imie = models.CharField(max_length=60)
     nazwisko = models.CharField(max_length=60)
-    miasiac_urodzenia = models.CharField(max_length=2, choices=miesiace_urodzenia, default="1")
+    miesiac_urodzenia = models.IntegerField(choices=miesiac.choices)
+    data_dodania = models.DateField(default=datetime.date.today)
+
+    class Meta:
+        ordering = ['nazwisko']
+    def __str__(self):
+        return self.imie + ' ' + self.nazwisko
