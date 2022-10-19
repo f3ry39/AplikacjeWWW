@@ -160,4 +160,4 @@ class Druzyna(models.Model) :
     nazwa = models.CharField(max_length=60)
     kraj = models.CharField(max_length=2)
     def __str__(self):
-        return self.kraj
+        return self.nazwa + '(' + self.kraj + ')'
