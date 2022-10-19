@@ -8,6 +8,7 @@ class OsobaAdmin(admin.ModelAdmin):
     list_display = ['imie', 'nazwisko', 'miesiac_urodzenia', 'data_dodania', 'kraj']
 class DruzynaAdmin(admin.ModelAdmin):
     list_display = ['nazwa', 'kraj']
+    list_filter = ['nazwa']
 
 # ten obiekt też trzeba zarejestrować w module admin
 admin.site.register(Question)
