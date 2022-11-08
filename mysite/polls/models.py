@@ -1,6 +1,59 @@
+from django.core.validators import RegexValidator
 from django.db import models
 import datetime
 from django.utils import timezone
+
+MIESIAC_URODZENIA = (
+        ('1', 'styczeń'),
+        ('2', 'luty'),
+        ('3', 'marzec'),
+        ('4', 'kwiecień'),
+        ('5', 'maj'),
+        ('6', 'czerwiec'),
+        ('7', 'lipiec'),
+        ('8', 'sierpień'),
+        ('9', 'wrzesień'),
+        ('10', 'październik'),
+        ('11', 'listopad'),
+        ('12', 'grudzień'),
+    )
+class Druzyna(models.Model):
+    kraj = models.CharField(max_length=2, validators=[RegexValidator('^[A-Z]', 'Tylko duże litery')])
+    nazwa = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.nazwa + ' ('+self.kraj+')'
+
+
+class Osoba(models.Model):
+    imie = models.CharField(max_length=255)
+    nazwisko = models.CharField(max_length=255)
+    class Miesiac(models.IntegerChoices):
+        STYCZEN = 1
+        LUTY = 2
+        MARZEC = 3
+        KWIECIEN = 4
+        MAJ = 5
+        CZERWIEC = 6
+        LIPIEC = 7
+        SIERPIEN = 8
+        WRZESIEN = 9
+        PAZDZIERNIK = 10
+        LISTOPAD = 11
+        GRUDZIEN = 12
+
+    miesiac_urodzenia = models.IntegerField(choices=Miesiac.choices)
+
+    miesiac_urodzenia = models.CharField(max_length=1, choices=MIESIAC_URODZENIA, default=MIESIAC_URODZENIA[0][0])
+    data_dodania = models.DateField(default=datetime.date.today)
+    kraj = models.ForeignKey('Druzyna', on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        ordering = ['nazwisko']
+
+    def __str__(self):
+        return self.imie + ' ' + self.nazwisko
+
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
@@ -129,35 +182,3 @@ class DjangoSession(models.Model):
         managed = False
         db_table = 'django_session'
 
-class Osoba(models.Model):
-    class miesiac(models.IntegerChoices):
-        STYCZEN = 1
-        LUTY = 2
-        MARZEC = 3
-        KWIECIEN = 4
-        MAJ = 5
-        CZERWIEC = 6
-        LIPIEC = 7
-        SIERPIEN = 8
-        WRZESIEN = 9
-        PAZDZIERNIK = 10
-        LISTOPAD = 11
-        GRUDZIEN = 12
-
-    imie = models.CharField(max_length=60)
-    nazwisko = models.CharField(max_length=60)
-    miesiac_urodzenia = models.IntegerField(choices=miesiac.choices)
-    data_dodania = models.DateField(default=datetime.date.today)
-    kraj = models.ForeignKey("Druzyna", blank = True, on_delete = models.CASCADE, null=True)
-
-    class Meta:
-        ordering = ['nazwisko']
-    def __str__(self):
-        return self.imie + ' ' + self.nazwisko
-
-class Druzyna(models.Model) :
-
-    nazwa = models.CharField(max_length=60)
-    kraj = models.CharField(max_length=2)
-    def __str__(self):
-        return self.nazwa + '(' + self.kraj + ')'
