@@ -1,7 +1,8 @@
+import datetime
 from django.core.validators import RegexValidator
 from django.db import models
-import datetime
-from django.utils import timezone
+from datetime import date
+
 
 MIESIAC_URODZENIA = (
         ('1', 'styczeń'),
@@ -17,6 +18,8 @@ MIESIAC_URODZENIA = (
         ('11', 'listopad'),
         ('12', 'grudzień'),
     )
+
+
 class Druzyna(models.Model):
     kraj = models.CharField(max_length=2, validators=[RegexValidator('^[A-Z]', 'Tylko duże litery')])
     nazwa = models.CharField(max_length=255)
@@ -26,25 +29,10 @@ class Druzyna(models.Model):
 
 
 class Osoba(models.Model):
-    imie = models.CharField(max_length=255)
+    imie = models.CharField(max_length=255, validators=[RegexValidator('^[a-zA-Z]+$', 'Tylko litery')])
     nazwisko = models.CharField(max_length=255)
-    class Miesiac(models.IntegerChoices):
-        STYCZEN = 1
-        LUTY = 2
-        MARZEC = 3
-        KWIECIEN = 4
-        MAJ = 5
-        CZERWIEC = 6
-        LIPIEC = 7
-        SIERPIEN = 8
-        WRZESIEN = 9
-        PAZDZIERNIK = 10
-        LISTOPAD = 11
-        GRUDZIEN = 12
-
-    miesiac_urodzenia = models.IntegerField(choices=Miesiac.choices)
-
-    miesiac_urodzenia = models.CharField(max_length=1, choices=MIESIAC_URODZENIA, default=MIESIAC_URODZENIA[0][0])
+    miesiac_urodzenia = models.CharField(max_length=255, choices=MIESIAC_URODZENIA, default=date.today().month)
+    miesiac_dodania = models.CharField(max_length=255, choices=MIESIAC_URODZENIA, default=date.today().month)
     data_dodania = models.DateField(default=datetime.date.today)
     kraj = models.ForeignKey('Druzyna', on_delete=models.CASCADE, null=True)
 
@@ -58,17 +46,19 @@ class Osoba(models.Model):
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
+
     def __str__(self):
         return self.question_text
-    def was_published_recently(self):
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
+
     def __str__(self):
         return self.choice_text
+
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
@@ -76,6 +66,7 @@ class AuthGroup(models.Model):
     class Meta:
         managed = False
         db_table = 'auth_group'
+
 
 class AuthGroupPermissions(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -181,5 +172,3 @@ class DjangoSession(models.Model):
     class Meta:
         managed = False
         db_table = 'django_session'
-
-
