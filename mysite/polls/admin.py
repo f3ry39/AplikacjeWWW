@@ -5,10 +5,10 @@ from .models import Osoba
 from .models import Druzyna
 
 class OsobaAdmin(admin.ModelAdmin):
-    list_display = ['imie', 'nazwisko', 'miesiac_urodzenia', 'data_dodania', 'kraj']
+    list_display = ['owner', 'imie', 'nazwisko', 'miesiac_urodzenia', 'data_dodania', 'kraj']
     list_filter = ['kraj', 'data_dodania']
 class DruzynaAdmin(admin.ModelAdmin):
-    list_display = ['nazwa', 'kraj']
+    list_display = ['id', 'nazwa', 'kraj']
     list_filter = ['nazwa']
 
 # ten obiekt też trzeba zarejestrować w module admin
